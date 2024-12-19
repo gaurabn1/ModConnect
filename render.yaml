@@ -3,26 +3,18 @@ services:
 - type: web
   name: ModConnect
   runtime: docker
-  repo: https://github.com/gaurabn1/ModConnect.
+  repo: https://github.com/gaurabn1/ModConnect
   plan: free
   envVars:
-  - key: DEBUG
+  - key: False
     sync: false
-  - key: EMAIL_HOST_USER
+  - key: gaurabneupane8969@gmail.com
     sync: false
-  - key: EMAIL_HOST_PASSWORD
+  - key: zdiiohjtdlxiakpb
     sync: false
-  - key: POSTGRES_PORT
+  - key: tu!vjsmkj@aw1im$--fy0tn_d&8bbe+p%uxf4h=)k29e$8q(=k
     sync: false
-  - key: POSTGRES_PASSWORD
-    sync: false
-  - key: POSTGRES_USER
-    sync: false
-  - key: POSTGRES_HOST
-    sync: false
-  - key: POSTGRES_DB
-    sync: false
-  - key: SECRET_KEY
+  - key: postgresql://modconnect_user:lUtWraGM74HT2mKcY43xmhocFcvpkPVX@dpg-cti1atl2ng1s73edcb20-a.singapore-postgres.render.com/modconnect_db   
     sync: false
   region: singapore
   dockerContext: .
