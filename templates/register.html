@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container d-flex align-items-center justify-content-center min-vh-100">
+    <div class="login-page card shadow-lg"
+        style="width: 25rem; border: none; background:linear-gradient(135deg, #0f2027, #203a43, #2c5364);">
+        <div class="card-body" style="background-color: rgba(255, 255, 255, 0.1);">
+            <div class="text-center mb-4">
+                <img src="{% static 'images/img-01.png' %}" alt="IMG" class="img-fluid" style="max-width: 150px;">
+            </div>
+            <h3 class="card-title text-center mb-4 text-light">Register</h3>
+            <form class="register-form" method="post">
+                {% csrf_token %}
+                <div class="container mt-4">
+                    <!-- 
+                    -------------Server Side Validation----------------------
+                    -->
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message|safe }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+
+                    <!-- 
+                    -----------Client Side Validation--------------------
+                    -->
+                    <!-- Required Fields Alert -->
+                    <div class="alert alert-danger alert-dismissible fade show d-none required-fields" role="alert">
+                        <strong>Error:</strong> All fields are required.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                    <!-- Email Validation Alert -->
+                    <div class="alert alert-danger alert-dismissible fade show d-none email-field" role="alert">
+                        <strong>Error:</strong> Please enter a valid email address.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                    <!-- Username Validation Alert -->
+                    <div class="alert alert-danger alert-dismissible fade show d-none username-field" role="alert">
+                        <strong>Error:</strong> Username must start with a letter.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    
+                    <!-- Symbol in Username Error -->
+                    <div class="alert alert-danger alert-dismissible fade show d-none username-field-symbols" role="alert">
+                        <strong>Error:</strong> Username cannot contain symbols.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    
+                    <!-- Password Mismatch Alert -->
+                    <div class="alert alert-danger alert-dismissible fade show d-none passwords-not-match" role="alert">
+                        <strong>Error:</strong> Passwords do not match.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                    <!-- Password Length Alert -->
+                    <div class="alert alert-danger alert-dismissible fade show d-none passwords-8-digits" role="alert">
+                        <strong>Error:</strong> Password must be at least 8 characters long.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                    <!-- Password Strength Alert -->
+                    <div class="alert alert-danger alert-dismissible fade show d-none passwords-alphanumeric"
+                        role="alert">
+                        <strong>Error:</strong> Password must include letters, numbers, and at least one special
+                        character.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <label for="username" class="text-light">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Enter username">
+                </div>
+                <div class="form-group">
+                    <label for="email" class="text-light mt-2">Email address</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="text-light mt-2">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                </div>
+                <div class="form-group">
+                    <label for="confirm_password" class="text-light mt-2">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirm_password" name="confirm_password"
+                        placeholder="Confirm Password">
+                </div>
+                <button type="submit"
+                    class="btn btn-primary btn-block mt-3 register-form-submit-button">Register</button>
+            </form>
+            <div class="text-center mt-4">
+                <a href="{% url 'login' %}" style="color: #c8c8c8; text-decoration: underline;">Already have an account?
+                    Login here</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+        $('.register-form-submit-button').on('click', function (e) {
+            e.preventDefault();
+            var username = $('#username').val().trim();
+            var email = $('#email').val().trim();
+            var password = $('#password').val();
+            var cpassword = $('#confirm_password').val();
+
+            var isValid = true;  // Flag to track overall validity
+
+            // Reset all error messages
+            $('.error-message').removeClass('d-block').addClass('d-none');
+
+            // Helper functions for validations
+            function validateUsername(username) {
+                const usernameRegex = /^[a-zA-Z][a-zA-Z0-9_]{3,}$/;  // Start with letter, at least 4 characters, no symbols
+                return usernameRegex.test(username);
+            }
+
+            function validateEmail(email) {
+                const emailRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                return emailRegex.test(email);
+            }
+
+            function validatePasswordStrength(password) {
+                const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+                return passwordRegex.test(password);
+            }
+
+            // Validation logic
+
+            // Check if any field is empty
+            if (!username || !email || !password || !cpassword) {
+                $('.required-fields').removeClass('d-none').addClass('d-block');
+                isValid = false;  // Set isValid to false to prevent form submission
+            }
+
+            if (username) {
+                // Check for symbols in username
+                if (/[^a-zA-Z0-9_]/.test(username)) {
+                    $('.username-field-symbols').removeClass('d-none').addClass('d-block');
+                    isValid = false;
+                } else if (!validateUsername(username)) {
+                    $('.username-field').removeClass('d-none').addClass('d-block');
+                    isValid = false;
+                }
+            }
+
+            if (email && !validateEmail(email)) {
+                $('.email-field').removeClass('d-none').addClass('d-block');
+                isValid = false;
+            }
+
+            if (password.length < 8) {
+                $('.passwords-8-digits').removeClass('d-none').addClass('d-block');
+                isValid = false;
+            }
+
+            if (!validatePasswordStrength(password)) {
+                $('.passwords-alphanumeric').removeClass('d-none').addClass('d-block');
+                isValid = false;
+            }
+
+            if (password !== cpassword) {
+                $('.passwords-not-match').removeClass('d-none').addClass('d-block');
+                isValid = false;
+            }
+
+            // If everything is valid, submit the form
+            if (isValid) {
+                $('.register-form').submit();
+            }
+        });
+    });
+</script>
+
+
+{% endblock script %}

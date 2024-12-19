@@ -1,0 +1,23 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="create-post-page">
+    <div class="d-flex align-items-center flex-column futuristic-container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb futuristic-breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'profile' user.id %}">Profile</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Create Post</li>
+            </ol>
+        </nav>
+        <h2 class="futuristic-heading">Create Post</h2>
+        <form action="" method="post" enctype="multipart/form-data" class="futuristic-form">
+            {% csrf_token %}
+            {{ create_post.as_p }}
+            <button type="submit" class="futuristic-button">Create</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}
+

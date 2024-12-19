@@ -1,0 +1,280 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row" style="height: 100vh;">
+    <!-- Sidebar -->
+    <div class="col-md-2 sidebar-col notification-page p-3 d-none d-md-block"
+        style="position: fixed; height: 100vh; background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); margin-left: 12px; margin-top: 20px;">
+        <aside class="sidebar" style="height: 86%;">
+            <div class="logo text-center mb-4">
+                <h3>FeedHub</h3>
+                <hr>
+            </div>
+            <div class="option">
+                <div class="top-options">
+                    <a href="{% url 'home' %}" class="d-flex align-items-center py-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                            fill="#0a58ca">
+                            <path
+                                d="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Zm0 420q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM320-280h320v-280q0-66-47-113t-113-47q-66 0-113 47t-47 113v280Z" />
+                        </svg>
+                        <span class="ml-2">Home</span>
+                    </a>
+                    <a href="#" class="d-flex align-items-center py-2" id="openSearchModal">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                            fill="#0a58ca">
+                            <path
+                                d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z" />
+                        </svg>
+                        <span class="ml-2">Search</span>
+                    </a>
+                    <a href="{% url 'notification' %}" class="active d-flex align-items-center py-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                            fill="#0a58ca">
+                            <path
+                                d="M160-200v-80h80v-280q0-83 50-147.5T420-792v-28q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v28q80 20 130 84.5T720-560v280h80v80H160Zm320-300Zm0 420q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM320-280h320v-280q0-66-47-113t-113-47q-66 0-113 47t-47 113v280Z" />
+                        </svg>
+                        <span class="ml-2">Notification</span>
+                        <span class="badge text-bg-danger mx-2">{{ count }}</span>
+                    </a>
+                </div>
+                <a id="logout" href="#" class="d-flex align-items-center py-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                        fill="#0a58ca">
+                        <path
+                            d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
+                    </svg>
+                    <span class="ml-2">Logout</span>
+                </a>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Main content -->
+    <div class="col-md-10 offset-md-2">
+        <div class="container">
+            <h1 class="text-center d-flex justify-content-between align-items-center" style="height: 80px; color: #c8c8c8;" >
+                <p></p>
+                Notifications
+                <button id="view-history" class="btn btn-primary btn-sm px-3" style="height: 50px;">History</button>
+            </h1>
+            <hr>
+            <div class="notification-container">
+                {% if unread_notification %}
+                {% for notification in unread_notification %}
+                <div class="notification" data-notification-id="{{ notification.id }}">
+                    <div class="notification-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                            fill="#0a58ca">
+                            <path
+                                d="M160-200v-80h80v-280q0-83 50-147.5T420-792v-28q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v28q80 20 130 84.5T720-560v280h80v80H160Zm320-300Zm0 420q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM320-280h320v-280q0-66-47-113t-113-47q-66 0-113 47t-47 113v280Z" />
+                        </svg>
+                    </div>
+                    <div class="notification-content">
+                        <h4>New Notification</h4>
+                        <p style="color: #afacac;">{{ notification.message }}</p>
+                    </div>
+                    <div class="notification-actions">
+                        <button class="btn btn-sm btn-primary mark-as-read">Mark as Read</button>
+                        <form action="{% url 'remove_notification' notification.id %}" method="post" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit"
+                                class="btn btn-sm btn-outline-danger remove-notification">Delete</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="text-center">
+                    <button class="btn btn-outline-danger btn-sm clear-all">Clear All</button>
+                </div>
+                {% else %}
+                <p style="color: #c8c8c8;">No notifications to display.</p>
+                {% endif %}
+            </div>
+
+            <!-- History Container -->
+            <div class="notification-history-container d-none">
+                <!-- <h2 class="text-center">Read Notifications</h2> -->
+                <hr>
+                {% if read_notifications %}
+                {% for notification in read_notifications %}
+                <div class="notification read-notification" data-notification-id="{{ notification.id }}">
+                    <div class="notification-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#0a58ca">
+                            <path
+                                d="M12 2C6.477 2 2 6.477 2 12c0 5.523 4.477 10 10 10s10-4.477 10-10c0-5.523-4.477-10-10-10zM12 22c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z">
+                            </path>
+                            <path d="M12 7c-.553 0-1 .448-1 1v6c0 .552.447 1 1 1s1-.448 1-1v-6c0-.552-.447-1-1-1z">
+                            </path>
+                            <circle cx="12" cy="16" r="1"></circle>
+                        </svg>
+                    </div>
+                    <div class="notification-content">
+                        <h4>Marked As Read Notification</h4>
+                        <p style="color: #afacac;">{{ notification }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="text-center mb-3">
+                    <button class="btn btn-outline-danger btn-sm clear-read">Clear All History</button>
+                </div>
+                {% else %}
+                <p style="color: #c8c8c8;">No read notifications to display.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+
+<script>
+    $(document).ready( function(){
+
+    //-----------Search Dialog---------------------//
+    
+    $('#openSearchModal').on('click', function(e){
+    e.preventDefault();
+        $('#searchModalDialog').modal('show');
+    })
+
+    //-----------Search Dialog End---------------------//
+
+
+
+
+
+    //--------------------Delete Notification----------------------//
+    $('.remove-notification').on('click', function (e) {
+        e.preventDefault();
+        var confirmed = confirm("Are you sure you want to delete notification?");
+        if (confirmed) {
+            $(this).closest('form').submit();
+        } else {
+            return false;
+        }
+    })
+    //------------------Delete Notification End-----------------//
+
+
+    //-------------Clear All UnRead Notifications-----------------#
+
+    $('.clear-all').on('click', function(e){
+        e.preventDefault();
+
+        let confirmed = confirm("Are you sure you want to delete all notifications?")
+        if(confirmed){
+            $.ajax({
+            type: 'POST',
+            url: '{% url "clear_all_unread_notifications" %}',
+            headers: {
+                'X-CSRFToken' : getCookie('csrftoken')
+            },
+            success: function(response){
+                    window.location.reload()
+            },
+            error: function(xhr, status, error){
+                console.log(error);
+            }
+        })
+        }
+    })
+
+    //-------------Clear All UnRead Notifications End-----------------#
+
+
+    //-------------Clear All Read Notifications-----------------#
+
+    $('.clear-read').on('click', function(e){
+        e.preventDefault();
+        let confirmed = confirm("Are you sure you want to clear history?")
+        if(confirmed){
+            $.ajax({
+                type: "POST",
+                url : '{% url "clear_all_read_notifications" %}',
+                headers: {
+                    'X-CSRFToken' : getCookie('csrftoken')
+                },
+                success : function(response){
+                        window.location.reload();
+                },
+                error: function(xhr, status, error){
+                    console.log(error, status)
+                }
+            })
+        }
+    })
+
+    //-------------Clear All Read Notifications End-----------------#
+
+    //Scroll to the saved Scroll Position after refresh 
+    if (localStorage.getItem('scrollPosition')) {
+        var savedPosition = parseInt(localStorage.getItem('scrollPosition'), 10);
+        window.scrollTo(0, savedPosition);
+        localStorage.removeItem('scrollPosition');
+    }
+
+
+    //-----------Notification Mark As Read-------------------------//
+    $('.mark-as-read').on('click', function (e) {
+        e.preventDefault();
+        var notification = $(this).closest('.notification');
+        var notificationId = notification.data('notification-id');
+
+        if (notificationId) {
+            $.ajax({
+                url: '/mark-as-read/' + notificationId + '/',
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                success: function (response) {
+                    if (response.success) {
+                        notification.addClass('marked-read');
+                        var scrollPosition = window.scrollY.toString();
+                        localStorage.setItem('scrollPosition', scrollPosition);
+                        setTimeout(function() {
+                            location.reload();
+                        }, 300);
+                    } else {
+                        console.error('Failed to mark notification as read');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error marking notification as read:', error);
+                }
+            });
+        }
+    })
+
+    //--------------Notification Mark As Read End------------------//
+
+
+    $('#view-history').on('click', function() {
+        $('.notification-container').toggleClass('d-none');
+        $('.notification-history-container').toggleClass('d-none');
+    });
+
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Extract CSRF token
+                if (cookie.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,77 @@
+.profile-page {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
+
+
+.futuristic-container {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.profilepage-card {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    color: #fff;
+}
+
+.profilepage-card .card-body {
+    text-align: center;
+}
+
+.profilepage-image {
+    border: 3px solid #0a58ca;
+}
+
+.futuristic-breadcrumb .breadcrumb-item a {
+    color: #f3ec78;
+}
+
+.futuristic-breadcrumb .breadcrumb-item.active {
+    color: #af4261;
+}
+
+.futuristic-container .card-body {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.breadcrumb-item+.breadcrumb-item::before{
+    color: #af4261;
+}
+
+.like-button svg, .comment svg, .create-post-link svg, .delete-post-icon svg, .edit-post-icon svg{
+    transition: transform 0.3s ease;
+}
+
+.like-button:hover svg, .comment:hover svg, .create-post-link:hover svg, .delete-post-icon:hover svg, .edit-post-icon:hover svg{
+    transform: scale(1.2);
+}
+
+.futuristic-container h5, .futuristic-container p, .futuristic-container ul {
+    color: #fff;
+}
+
+.futuristic-container ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+
+/* ---------Interaction Post-------------- */
+
+.delete-post-icon {
+    display: block;
+}
+
+

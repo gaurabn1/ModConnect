@@ -1,0 +1,22 @@
+databases:
+  - name: dpg-cti1atl2ng1s73edcb20-a
+    plan: free
+    databaseName: modconnect_db
+    user: modconnect_user
+
+services:
+  - type: web
+    plan: free
+    name: ModConnect
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "python -m gunicorn mysite.asgi:application -k uvicorn.workers.UvicornWorker"
+    envVars:
+      - key: postgresql://modconnect_user:lUtWraGM74HT2mKcY43xmhocFcvpkPVX@dpg-cti1atl2ng1s73edcb20-a/modconnect_db
+        fromDatabase:
+          name: dpg-cti1atl2ng1s73edcb20-a
+          property: connectionString
+      - key: tu!vjsmkj@aw1im$--fy0tn_d&8bbe+p%uxf4h=)k29e$8q(=k
+        generateValue: true
+      - key: WEB_CONCURRENCY
+        value: 4

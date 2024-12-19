@@ -1,0 +1,60 @@
+.create-post-page{
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+   
+}
+
+
+.futuristic-container {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.futuristic-heading {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    background: -webkit-linear-gradient(#f3ec78, #af4261);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.futuristic-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.futuristic-form input, .futuristic-form button {
+    width: 100%;
+    padding: 0.75rem;
+    margin: 0.5rem 0;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+}
+
+.futuristic-form input {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.futuristic-form button {
+    background: #3a6073;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.futuristic-form button:hover {
+    background: #2c5364;
+}

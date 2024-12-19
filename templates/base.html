@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/home-style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/password-reset.css' %}">
+    <link rel="stylesheet" href="{% static 'css/profile-style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/notification.css' %}">
+    <link rel="stylesheet" href="{% static 'css/create-post-page.css' %}">
+    <title>Social Media Feed</title>
+</head>
+<body>
+    {% block content %}
+    {% endblock content %}
+    <div class="modal fade" id="searchModalDialog" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+          <div class="modal-content bg-dark text-light">
+            <div class="modal-header">
+              <h5 class="modal-title" id="searchModalLabel">Search</h5>
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <!-- Search form -->
+              <form class="d-flex" id="searchForm">
+                <input class="form-control me-2" id="searchField" type="search" placeholder="Search username" aria-label="Search">
+                <button class="btn btn-outline-light" type="submit" id="searchFormButton">Search</button>
+              </form>
+              <div class="search-results mt-3">
+                
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <script src="{% static 'js/jquery.js' %}"></script>
+      <script src="{% static 'js/bootstrap.min.js' %}"></script>
+      <script src="{% static 'js/script.js' %}"></script>
+  
+    {% block script %}
+
+    <script>
+        //  Toggle Comments
+  function toggleComments(event, postId) {
+      event.preventDefault();
+      var commentsSection = document.getElementById('comments-' + postId);
+      commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
+    }
+
+    // Toggle Search
+  $('#openSearchModal').on('click', function(e){
+    e.preventDefault();
+        $('#searchModalDialog').modal('show');
+  })
+    </script>
+    {% endblock script %}
+
+</body>
+</html>

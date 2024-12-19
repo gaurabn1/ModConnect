@@ -1,0 +1,95 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container d-flex align-items-center justify-content-center min-vh-100">
+  <div class="login-page card shadow-lg" style="width: 25rem; border: none; background:linear-gradient(135deg, #0f2027, #203a43, #2c5364);"  >
+    <div class="card-body" style=" background-color: rgba(255, 255, 255, 0.1); ">
+      <div class="text-center mb-4">
+        <img src="{% static 'images/img-01.png' %}" alt="IMG" class="img-fluid" style="max-width: 150px;">
+      </div>
+    <h3 class="card-title text-center mb-4 text-light">Login</h3>
+    <form id="login-form-submit" method="POST">
+      {% csrf_token %}
+      <!-- 
+        -----------Server Side Validation--------------------
+      -->
+      {% if messages %}
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message|safe }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      {% endfor %}
+      {% endif %}
+
+      <!-- 
+        -----------Client Side Validation--------------------
+      -->
+      <div class="alert alert-danger alert-dismissible fade show d-none login-required-fields" role="alert">
+        ***All fields are required***
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      <div class="alert alert-danger alert-dismissible fade show d-none login-email-format" role="alert">
+        ***Incorrect Email Format***
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+      <div class="form-group login-form">
+        <label for="email" class="text-light">Email address</label>
+        <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" required>
+      </div>
+      <div class="form-group">
+        <label for="password" class="text-light mt-2">Password</label>
+        <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+      </div>
+      <button type="submit" class="btn btn-primary btn-block mt-3 login-form-submit-button">Login</button>
+
+      <!-- Admin Login Link -->
+      <div class="mt-3 text-center">
+        <a href="{% url 'admin:login' %}" class="text-light">Admin Login</a>
+      </div>
+    </form>
+    <div class="text-center mt-4">
+      <a href="{% url 'register' %}" style="color: #c8c8c8; text-decoration: underline;">Create your Account</a>
+      <br>
+      <a href="{% url 'password_reset' %}" style="color: #c8c8c8; text-decoration: underline;">Forgot password?</a>
+    </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+  //--------------Submit Login------------------//
+  $('.login-form-submit-button').on('click', function (e) {
+    e.preventDefault();
+    var email = $('#email').val();
+    var password = $('#password').val();
+    var isValid = true;
+
+    var regex = /^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/;
+
+
+    //Check for Empty fields
+    if(!email || !password){
+      $('.login-required-fields').removeClass('d-none').addClass('d-block');
+      isValid = false;
+    }
+
+    //Check for email format
+    if(!regex.test(email)){
+      $('.login-email-format').removeClass('d-none').addClass('d-block');
+      isValid = false;
+    }
+
+    if(isValid){
+      $('#login-form-submit').submit();
+    }
+
+    //--------------Submit Login End------------------//
+  });
+</script>
+
+{% endblock script %}
+

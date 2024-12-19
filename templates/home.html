@@ -1,0 +1,332 @@
+  {% extends 'base.html' %}
+  {% load static %}
+  {% block content %}
+
+
+  <div class="container-fluid">
+
+    <div class="row">
+      <!-- Left Sidebar -->
+      <div class="col-md-2 sidebar-col bg-light p-3 d-none d-md-block"
+        style="position: fixed; height: 100vh; background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);">
+
+        <aside class="sidebar" style="height: 86%;">
+          <div class="logo text-center mb-4">
+            <h3>FeedHub</h3>
+            <hr>
+          </div>
+          <div class="option">
+            <div class="top-options">
+              <a href="{% url 'home' %}" class="active d-flex align-items-center py-2">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                  fill="#c8c8c8">
+                  <path
+                    d="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Zm0 420q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM320-280h320v-280q0-66-47-113t-113-47q-66 0-113 47t-47 113v280Z" />
+                </svg>
+                <span class="ml-2">Home</span>
+              </a>
+              <a href="#" class="d-flex align-items-center py-2" id="openSearchModal">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                  fill="#c8c8c8">
+                  <path
+                    d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z" />
+                </svg>
+                <span class="ml-2">Search</span>
+              </a>
+              <a href="{% url 'notification' %}" class="d-flex align-items-center py-2">
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"
+                  fill="#c8c8c8">
+                  <path
+                    d="M160-200v-80h80v-280q0-83 50-147.5T420-792v-28q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v28q80 20 130 84.5T720-560v280h80v80H160Zm320-300Zm0 420q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM320-280h320v-280q0-66-47-113t-113-47q-66 0-113 47t-47 113v280Z" />
+                </svg>
+                <span class="ml-2">Notification</span>
+                <span class="badge text-bg-danger mx-2">{{ count }}</span>
+              </a>
+            </div>
+            <a id="logout" href="#" class="d-flex align-items-center py-2">
+              <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#c8c8c8">
+                <path
+                  d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z" />
+              </svg>
+              <span class="ml-2">Logout</span>
+            </a>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Middle -->
+      <div class="col-md-6 offset-md-3 p-3">
+        {% if posts %}
+        {% for post in posts %}
+        <section>
+          <div class="container posts my-1 py-2">
+            <div class="card mb-4" style="max-width: 600px;">
+              <div class="card-body">
+                <div class="user-info d-flex align-items-center mb-3">
+                  <img class="rounded-circle shadow-1-strong me-3"
+                    src="{% if post.author.image %}{{ post.author.image.url }}{% else %}{% static 'images/avatar.jpg' %}{% endif %}"
+                    alt="avatar" width="60" height="60" style="object-fit: cover;" />
+                  <div>
+                    {% if not post.author.first_name %}
+                    <h6 class="fw-bold text-primary mb-1 text-capitalize"><a href="{% url 'profile' post.author.id %}"
+                        style="color:#c8c8c8;">{{ post.author.username }}</a></h6>
+                    {% else %}
+                    <h6 class="fw-bold text-primary mb-1"><a href="{% url 'profile' post.author.id %}"
+                        style="color: #c8c8c8;">{{ post.author.first_name }} {{ post.author.last_name }}</a></h6>
+                    {% endif %}
+                    <p class="small mb-0" style="color: #afacac;">{{ post.author.email }}</p>
+                  </div>
+                </div>
+
+                <div class="post-image text-center mb-3">
+                  {% if post.blurred_image %}
+                  <img src="{{ post.blurred_image.url  }}" class="img-fluid" style="object-fit: cover; height: 300px;"
+                    alt="">
+                  {% else %}
+                  <img src="{{ post.image.url }}" class="img-fluid" style="object-fit: cover; height: 300px;" alt="">
+                  {% endif %}
+                  <p class="mt-2 ms-1" style="color: #c8c8c8;">{{ post.caption }}</p>
+                </div>
+
+                <div class="small d-flex justify-content-start align-items-center">
+                  <div class="interact d-flex align-items-center">
+                    <!-- Like counter -->
+                    <span class="like-counter fs-5 me-3" data-post-id="{{ post.id }}" style="color: #c8c8c8;">{{ post.likes.count }}</span>
+                
+                    <!-- Like button -->
+                    <a href="#" class="like-button" data-post-id="{{ post.id }}">
+                        {% for post_info in liked_post %}
+                        {% if post_info.post.id == post.id %}
+                            {% if post_info.liked %}
+                                <!-- Liked Icon (Initially shown if liked) -->
+                                <span class="liked-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ff0000">
+                                        <path d="M720-120H280v-520l280-280 50 50q7 7 11.5 19t4.5 23v14l-44 174h258q32 0 56 24t24 56v80q0 7-2 15t-4 15L794-168q-9 20-30 34t-44 14Zm-360-80h360l120-280v-80H480l54-220-174 174v406Zm0-406v406-406Zm-80-34v80H160v360h120v80H80v-520h200Z" />
+                                    </svg>
+                                </span>
+                                <!-- Unliked Icon (Hidden if liked) -->
+                                <span class="unliked-icon" style="display: none;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#c8c8c8">
+                                        <path d="M720-120H280v-520l280-280 50 50q7 7 11.5 19t4.5 23v14l-44 174h258q32 0 56 24t24 56v80q0 7-2 15t-4 15L794-168q-9 20-30 34t-44 14Zm-360-80h360l120-280v-80H480l54-220-174 174v406Zm0-406v406-406Zm-80-34v80H160v360h120v80H80v-520h200Z" />
+                                    </svg>
+                                </span>
+                            {% else %}
+                                <!-- Unliked Icon (Initially shown if not liked) -->
+                                <span class="unliked-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#c8c8c8">
+                                        <path d="M720-120H280v-520l280-280 50 50q7 7 11.5 19t4.5 23v14l-44 174h258q32 0 56 24t24 56v80q0 7-2 15t-4 15L794-168q-9 20-30 34t-44 14Zm-360-80h360l120-280v-80H480l54-220-174 174v406Zm0-406v406-406Zm-80-34v80H160v360h120v80H80v-520h200Z" />
+                                    </svg>
+                                </span>
+                                <!-- Liked Icon (Hidden if not liked) -->
+                                <span class="liked-icon" style="display: none;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ff0000">
+                                        <path d="M720-120H280v-520l280-280 50 50q7 7 11.5 19t4.5 23v14l-44 174h258q32 0 56 24t24 56v80q0 7-2 15t-4 15L794-168q-9 20-30 34t-44 14Zm-360-80h360l120-280v-80H480l54-220-174 174v406Zm0-406v406-406Zm-80-34v80H160v360h120v80H80v-520h200Z" />
+                                    </svg>
+                                </span>
+                            {% endif %}
+                        {% endif %}
+                        {% endfor %}
+                    </a>
+                
+                    <!-- Comment button -->
+                    <a href="#" class="comment ms-5" onclick="toggleComments(event, '{{ post.id }}')" id="commentIcon-{{post.id}}" data-post-id="{{post.id}}">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#c8c8c8">
+                            <path d="M240-400h480v-80H240v80Zzm0-120h480v-80H240v80Zzm0-120h480v-80H240v80ZM880-80 720-240H160q-33 0-56.5-23.5T80-320v-480q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v720ZM160-320h594l46 45v-525H160v480Zzm0 0v-480 480Z" />
+                        </svg>
+                    </a>
+                </div>
+                
+                </div>
+              </div>
+
+              <div class="card-footer py-3 border-0" style=" background-color: rgba(255, 255, 255, 0.1);">
+                <div class="d-flex">
+                  <img class="rounded-circle shadow-1-strong me-3"
+                    src="{% if post.author.image %}{{ post.author.image.url }}{% else %}{% static 'images/avatar.jpg' %}{% endif %}"
+                    alt="avatar" width="60" height="60" style="object-fit: cover;" />
+                  <div class="w-100">
+                    <form method="post" action="{% url 'home' %}" id="comment_form-{{post.id}}">
+                      {% csrf_token %}
+                      <input type="hidden" name="post_id" value="{{ post.id }}">
+                      <div class="form-outline">
+                        {{ comment_form.text }}
+                      </div>
+                      <div class="mt-3 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary btn-sm me-2" id="post_comment-{{post.id}}"
+                          style="border: none;" data-post-id="{{post.id}}">Post comment</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+
+
+
+            </div>
+          </div>
+        </section>
+        {% endfor %}
+        {% else %}
+        <div class="container text-center my-5 ">
+          <h2 class="text-white">No posts available</h2>
+          <p class="lead text-white">Start following users to see their posts here!</p>
+        </div>
+        {% endif %}
+      </div>
+      <!-- Middle Section End -->
+
+      <!-- Right Sidebar -->
+      <div class="col-md-3 bg-light p-3 d-none d-md-block"
+        style="position: fixed; right: 0; height: 100vh; background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); overflow-y: auto;">
+        <article id="rightSidebar">
+          <!-- 
+          -------------Own Profile Card---------------
+          -->
+          <div class="profile-card text-center mb-4" style="background-color: rgba(255, 255, 255, 0.1);">
+            <div class="profile-image mb-2">
+              {% if user.image %}
+              <img src="{{ user.image.url }}" class="rounded-circle" height="50px" width="50px" alt="" style="object-fit: cover;">
+              {% else %}
+              <img src="{% static 'images/avatar.jpg' %}" class="rounded-circle" height="50px" width="50px" alt="" style="object-fit: cover;">
+              {% endif %}
+            </div>
+            <div class="profile-details">
+              {% if not user.first_name %}
+              <p class="text-capitalize"><a href="{% url 'profile' user.id %}" style="color: #c8c8c8;">{{user.username}}</a></p>
+              {% else %}
+              <p><a href="{% url 'profile' user.id %}" style="color: #c8c8c8;">{{ user.first_name }} {{user.last_name}}</a></p>
+              {% endif %}
+              <small style="color: #afacac;">{{ user.email }}</small>
+            </div>
+          </div>
+          <!-- 
+          -------------Owo Profile Card End---------------
+          -->
+
+          <!-- 
+          -------------------Suggested Users---------------
+          --->
+          <div class="suggested-people">
+            <h5 style="color: #f8f9fa;">Suggested Users</h5>
+            {% for suggested_user in users %}
+            <div class="profile-card d-flex align-items-center mb-3" style="background-color: rgba(255, 255, 255, 0.1);">
+              <div class="profile-image mr-3">
+                {% if suggested_user.image %}
+                <img src="{{ suggested_user.image.url }}" class="rounded-circle" height="50px" width="50px" style="object-fit: cover;"
+                  alt="">
+                {% else %}
+                <img src="{% static 'images/avatar.jpg' %}" class="rounded-circle" height="50px" width="50px" alt="">
+                {% endif %}
+              </div>
+              <div class="profile-details">
+                {% if not suggested_user.first_name %}
+                <p class="text-start text-capitalize"><a href="{% url 'profile' suggested_user.id %}"
+                    style="color: #c8c8c8;">{{ suggested_user.username }}</a></p>
+                {% else %}
+                <p><a href="{% url 'profile' suggested_user.id %}" style="color: #c8c8c8;">{{ suggested_user.first_name }}
+                    {{suggested_user.last_name }}</a></p>
+                {% endif %}
+                <small style="color: #afacac;">{{ suggested_user.email }}</small>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          <!-- 
+          -------------------Suggested Users End---------------
+          --->
+        </article>
+      </div>
+    </div>
+  </div>
+
+
+  {% endblock content %}
+
+  {% block script %}
+  <script>
+
+    //  Toggle Comments
+    function toggleComments(event, postId) {
+      event.preventDefault();
+      var commentsSection = document.getElementById('comments-' + postId);
+      commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
+    }
+
+    // Toggle Search
+    $('#openSearchModal').on('click', function (e) {
+      e.preventDefault();
+      $('#searchModalDialog').modal('show');
+    })
+
+    $('.reply-button').on('click', function (e) {
+      e.preventDefault();
+      const commentId = $(this).data('comment-id');
+      const replyForm = $('#reply-form-' + commentId);
+
+      if (replyForm.is(':visible')) {
+        replyForm.hide();
+      } else {
+        replyForm.show();
+      }
+    });
+
+
+    $('button[id^="comment_comment-"]').on('click', function (e) {
+      e.preventDefault();
+      let comment_id = $(this).data('comment-id')
+      let reply_text = $(`#reply_form-${comment_id} textarea[name='text']`).val()
+      $.ajax({
+        type: 'post',
+        url: `/post/add-reply/${comment_id}`,
+        headers: {
+          "X-CSRFToken": getCookie('csrftoken')
+        },
+        data: {
+          'parent_id': comment_id,
+          'text': reply_text,
+        },
+        success: function (response) {
+          let comments = response.comments
+          let replySection = $(`#reply-form-${comment_id}`);
+          $(`#reply_form-${comment_id} textarea[name='text']`).val('')
+
+          comments.forEach(function (comment) {
+            let userImage = comment.user_image ? comment.user_image : 'static/images/avatar.jpg';
+            let authorUsername = comment.author_username;
+            let censoredText = comment.censored_text;
+
+            let replyHTML = `
+                            <div class="card-footer py-3 border-0" style="background-color: rgba(255, 255, 255, 0.05);">
+                                <div class="d-flex">
+                                    <img class="rounded-circle shadow-1-strong me-3" src="${userImage}"  alt="avatar" width="40" height="40" style="object-fit: cover;" />
+                                    <div class="w-100">
+                                        <h6 class="fw-bold text-primary mb-1">
+                                            <a href="/profile/${comment.author.id}" style="color: #c8c8c8;">
+                                                ${authorUsername}
+                                            </a>
+                                        </h6>
+                                        <p class="small mb-0" style="color: #afacac;">
+                                            ${censoredText}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+            replySection.prepend(replyHTML);
+          })
+
+          replySection.slideDown();
+
+
+        },
+        error: function (error) {
+          console.log(error)
+        }
+      })
+
+    })
+
+  </script>
+
+  {% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-3 comment-page">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb futuristic-breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'profile' post.author.id  %}">Profile</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Comment</li>
+        </ol>
+    </nav>
+    <!-- Section to leave a new comment -->
+    <h2 class="mb-4 text-white">Leave a Comment</h2>
+    <form method="post" action="{% url 'comment_page' post.id %}" id="comment_form">
+        {% csrf_token %}
+        <input type="hidden" name="post_id" value="{{ post.id }}">
+        <div class="form-outline mb-4">
+            {{ form.text }}
+        </div>
+        <div class="text-end">
+            <button type="submit" class="btn btn-primary">Post Comment</button>
+        </div>
+    </form>
+
+    <div class="futuristic-container mt-3">
+        <!-- Section to display existing comments -->
+        <div class="comments-section mb-4">
+            {% for comment in comments %}
+            <div class="comment mb-3" style="background: rgba(255, 255, 255, 0.1); padding: 1rem; border-radius: 10px; position: relative;">
+                <div class="d-flex align-items-center mb-2">
+                    <img class="rounded-circle shadow-1-strong me-3"
+                        src="{% if comment.author.profile_image %}{% static 'images/' %}{{ comment.author.profile_image }}{% else %}{% static 'images/avatar.jpg' %}{% endif %}"
+                        alt="avatar" width="40" height="40" style="object-fit: cover;" />
+                    <div class="w-100">
+                        <h6 class="fw-bold text-primary mb-1">
+                            <a href="{% url 'profile' comment.author.id %}" style="color: #c8c8c8;">{{ comment.author.username }}</a>
+                        </h6>
+                        <p class="mb-0" style="color: #afacac;">{{ comment.censored_text }}</p>
+                    </div>
+                    <!-- Delete Comment -->
+                    <a href="{% url 'delete_comment' comment.id %}" onclick="return confirm('Are you sure to delete this comment?')" class="delete-comment-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2" style="color: white;">
+                            <path d="M3 6h18"></path>
+                            <path d="M8 6l1 14h8l1-14H8z"></path>
+                            <path d="M10 11v6"></path>
+                            <path d="M14 11v6"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <p>No comments yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    const MAX_COMMENT_LENGTH = 500;  
+
+    const form = document.getElementById('comment_form');
+    const commentTextField = form.querySelector('[name="text"]');
+    
+    form.addEventListener('submit', function(event) {
+        const commentText = commentTextField.value.trim();
+        
+        if (commentText.length > MAX_COMMENT_LENGTH) {
+            event.preventDefault(); 
+            alert(`Comment cannot exceed ${MAX_COMMENT_LENGTH} characters.`);
+        }
+    });
+</script>
+{% endblock %}
